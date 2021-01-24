@@ -1,0 +1,14 @@
+version: "3.5"
+services:
+  torial-aws-cli-for-cfn:
+    build:
+      context: ./dockerfiles/python/
+      dockerfile: Dockerfile
+    tty: true
+    stdin_open: true
+    image: torial-aws-cli-for-cfn
+    working_dir: /app
+    volumes:
+      - .:/app
+      - ~/.aws:/root/.aws
+    container_name: torial-aws-cli-for-cfn
