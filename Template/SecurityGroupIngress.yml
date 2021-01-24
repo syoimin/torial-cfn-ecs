@@ -1,0 +1,16 @@
+# SecurityGroup
+AWSTemplateFormatVersion: 2010-09-09
+Description: SecurityGroup For ECS
+Parameters:
+
+Resources:
+  SecurityGroupIngress:
+    Description: Creating AWS SecurityGroupIngress
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref 'EcsSecurityGroup'
+      IpProtocol: tcp
+      FromPort: '80'
+      ToPort: '80'
+      CidrIp: 0.0.0.0/0
+      

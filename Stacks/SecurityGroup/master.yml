@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: SecurityGroup Ingress for ECS
+
+Parameters:
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: Select a VPC that allows instances access to the Internet.
+
+Resources:
+  EcsSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: ECS Security Group
+      VpcId: !Ref 'VpcId'
+  EcsSecurityGroupHTTPinbound:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: ../../Template/SecurityGroupIngress.yml
+      Parameters:
+        GroupId: !Ref 'EcsSecurityGroup'
+        IpProtocol: tcp
+        FromPort: '80'
+        ToPort: '80'
+        CidrIp: 0.0.0.0/0
+  EcsSecurityGroupSSHinbound:
+     Type: AWS::CloudFormation::Stack
+      Properties: ../../Template/SecurityGroupIngress.yml
+        GroupId: !Ref 'EcsSecurityGroup'
+        IpProtocol: tcp
+        FromPort: '22'
+        ToPort: '22'
+        CidrIp: 0.0.0.0/0
+  EcsSecurityGroupALBports:
+     Type: AWS::CloudFormation::Stack
+      Properties: ../../Template/SecurityGroupIngress.yml
+        GroupId: !Ref 'EcsSecurityGroup'
+        IpProtocol: tcp
+        FromPort: '31000'
+        ToPort: '61000'
+        SourceSecurityGroupId: !Ref 'EcsSecurityGroup'
+
+Outputs:
+  EcsSecurityGroup:
+    Description: The ID of the EcsSecurityGroup
+    Value: !Ref EcsSecurityGroup
+    Export:
+      Name: !Sub ${ServiceName}-${Env}-${Type}-${Use}-EcsSecurityGroup
